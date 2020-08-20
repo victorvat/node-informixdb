@@ -20,7 +20,7 @@ if (process.argv.length === 3) {
 }
 
 var connectionStrings = common.testConnectionStrings;
-
+console.log("connectionStrings is: ", connectionStrings);
 //check to see if the requested test is actually a driver to test
 if (requestedTest) {
   connectionStrings.forEach(function (connectionString) {
