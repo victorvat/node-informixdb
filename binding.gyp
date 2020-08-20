@@ -16,7 +16,8 @@
       'defines' :
       [
         #'UNICODE',
-        'ODBC64'
+        'ODBC64',
+        'DEBUG'
       ],
 
       "variables" : {

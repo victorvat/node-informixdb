@@ -69,8 +69,8 @@ char * strptime(const char *buf, const char *fmt, struct tm *tm)
         if ((c = *fmt++) != '%')
             goto literal;
 
-
-    again:    switch (c = *fmt++)
+    again:
+        switch (c = *fmt++)
     {
     case '%': /* "%%" is converted to "%". */
         literal :

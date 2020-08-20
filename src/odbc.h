@@ -54,24 +54,37 @@ using namespace node;
 
 
 // Free Bind Parameters 
-#define FREE_PARAMS( params, count )                                 \
-    Parameter prm;                                                   \
-    if(params != NULL ) {                                            \
-      for (int i = 0; i < count; i++) {                              \
-        if (prm = params[i], prm.buffer != NULL) {                   \
-          switch (prm.c_type) {                                      \
-            case SQL_C_LONG:    delete (int64_t *)prm.buffer; break; \
-            case SQL_C_DOUBLE:  delete (double  *)prm.buffer; break; \
-            case SQL_C_BIT:     delete (bool    *)prm.buffer; break; \
-            case SQL_C_CHAR:                                         \
-            case SQL_C_WCHAR:                                        \
-            default:     free(prm.buffer); prm.buffer = NULL; break; \
-          }                                                          \
-        }                                                            \
-      }                                                              \
-      free(params);                                                  \
-    }                                                                \
-    params = NULL;                                                   \
+#define FREE_PARAMS( params, count )                                \
+    Parameter prm;                                                  \
+    if(params != NULL )                                             \
+    {                                                               \
+      for (int i = 0; i < count; i++)                               \
+      {                                                             \
+        if (prm = params[i], prm.buffer != NULL)                    \
+        {                                                           \
+          switch (prm.c_type)                                       \
+          {                                                         \
+            case SQL_C_LONG:                                        \
+                delete (int64_t *)prm.buffer;                       \
+                break;                                              \
+            case SQL_C_DOUBLE:                                      \
+                delete (double  *)prm.buffer;                       \
+                break;                                              \
+            case SQL_C_BIT:                                         \
+                delete (bool    *)prm.buffer;                       \
+                break;                                              \
+            case SQL_C_CHAR:                                        \
+            case SQL_C_WCHAR:                                       \
+        default:                                                    \
+          free(prm.buffer);                                         \
+          prm.buffer = NULL;                                        \
+          break;                                                    \
+          }                                                         \
+        }                                                           \
+      }                                                             \
+      free(params);                                                 \
+    }                                                               \
+    params = NULL;                                                  \
     count = 0;
 
 // two macros ensures that any macro used will be expanded 
@@ -80,14 +93,16 @@ using namespace node;
 #define LINENO(x) LINESTRING(x)
 // Check memory allocated successfully or not.
 #define MEMCHECK( buffer )                                           \
-  if (!buffer) {                                                     \
+  if (!buffer)                                                        \
+  {                                                                   \
     Nan::LowMemoryNotification();                                    \
     Nan::ThrowError( "Could not allocate enough memory in informixdb "   \
                      "file " __FILE__ ":" LINENO(__LINE__) ".");     \
     return;                                                          \
   }
 
-typedef struct {
+typedef struct
+{
   unsigned char *name;
   unsigned char *type_name;
   unsigned int len;
@@ -95,7 +110,8 @@ typedef struct {
   SQLUSMALLINT index;
 } Column;
 
-typedef struct {
+typedef struct
+{
   SQLSMALLINT  paramtype;
   SQLSMALLINT  c_type;
   SQLSMALLINT  type;
@@ -108,7 +124,8 @@ typedef struct {
   SQLINTEGER   fileIndicator; // For BindFileToParam
 } Parameter;
 
-class ODBC : public Nan::ObjectWrap {
+class ODBC : public Nan::ObjectWrap
+{
   public:
     static Nan::Persistent<Function> constructor;
     static uv_mutex_t g_odbcMutex;
@@ -160,27 +177,31 @@ class ODBC : public Nan::ObjectWrap {
     SQLHENV m_hEnv;
 };
 
-struct create_connection_work_data {
+struct create_connection_work_data
+{
   Nan::Callback* cb;
   ODBC *dbo;
   SQLHDBC hDBC;
   int result;
 };
 
-struct open_request {
+struct open_request
+{
   Nan::Persistent<Function> cb;
   ODBC *dbo;
   int result;
   char connection[1];
 };
 
-struct close_request {
+struct close_request
+{
   Nan::Persistent<Function> cb;
   ODBC *dbo;
   int result;
 };
 
-struct query_request {
+struct query_request
+{
   Nan::Persistent<Function> cb;
   ODBC *dbo;
   SQLHSTMT hSTMT;
@@ -273,11 +294,16 @@ struct query_request {
 
 #define OPT_INT_ARG(I, VAR, DEFAULT)                                    \
   SQLUSMALLINT VAR;                                                     \
-  if (info.Length() <= (I)) {                                           \
+  if (info.Length() <= (I))                                           \
+  {                                                                   \
     VAR = (DEFAULT);                                                    \
-  } else if (info[I]->IsInt32()) {                                      \
+  } 																	\
+  else if (info[I]->IsInt32()) 											\
+  {                                      \
     VAR = info[I]->Int32Value();                                        \
-  } else {                                                              \
+  } 																	\
+  else                                                                \
+  {                                                                   \
     return Nan::ThrowTypeError("Argument " #I " must be an integer");     \
   }
 

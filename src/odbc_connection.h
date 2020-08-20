@@ -24,7 +24,8 @@
 
 #define DEFAULT_CONNECTION_TIMEOUT 30
 
-class ODBCConnection : public Nan::ObjectWrap {
+class ODBCConnection : public Nan::ObjectWrap 
+{
   public:
    static Nan::Persistent<String> OPTION_SQL;
    static Nan::Persistent<String> OPTION_PARAMS;
@@ -99,7 +100,8 @@ class ODBCConnection : public Nan::ObjectWrap {
     static NAN_METHOD(EndTransactionSync);
     static NAN_METHOD(SetIsolationLevel);
     
-    struct Fetch_Request {
+    struct Fetch_Request 
+    {
       Nan::Callback* callback;
       ODBCConnection *objResult;
       SQLRETURN result;
