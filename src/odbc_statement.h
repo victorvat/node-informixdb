@@ -25,8 +25,8 @@
 class ODBCStatement : public Nan::ObjectWrap {
   public:
    static Nan::Persistent<Function> constructor;
-   static void Init(v8::Handle<Object> exports);
-   
+   static NAN_MODULE_INIT(Init);
+
    void Free();
    
   protected:
@@ -64,6 +64,14 @@ class ODBCStatement : public Nan::ObjectWrap {
     static void UV_Bind(uv_work_t* work_req);
     static void UV_AfterBind(uv_work_t* work_req, int status);
     
+    static NAN_METHOD(SetAttr);
+    static void UV_SetAttr(uv_work_t* work_req);
+    static void UV_AfterSetAttr(uv_work_t* work_req, int status);
+
+    static NAN_METHOD(Close);
+    static void UV_Close(uv_work_t* work_req);
+    static void UV_AfterClose(uv_work_t* work_req, int status);
+    
     //sync methods
     static NAN_METHOD(CloseSync);
     static NAN_METHOD(ExecuteSync);
@@ -71,6 +79,7 @@ class ODBCStatement : public Nan::ObjectWrap {
     static NAN_METHOD(ExecuteNonQuerySync);
     static NAN_METHOD(PrepareSync);
     static NAN_METHOD(BindSync);
+    static NAN_METHOD(SetAttrSync);
     
     struct Fetch_Request {
       Nan::Callback* callback;
@@ -121,5 +130,22 @@ struct bind_work_data {
   ODBCStatement *stmt;
   int result;
 };
+
+struct setattr_work_data {
+  Nan::Callback* cb;
+  ODBCStatement *stmt;
+  int result;
+  SQLINTEGER attr;
+  SQLPOINTER valuePtr;
+  SQLINTEGER stringLength;
+};
+
+struct close_statement_work_data {
+  Nan::Callback* cb;
+  ODBCStatement *stmt;
+  SQLUSMALLINT closeOption;
+  int result;
+};
+
 
 #endif

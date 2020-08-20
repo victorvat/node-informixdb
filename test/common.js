@@ -9,49 +9,54 @@ try {
 }
 catch (e) {
   exports.connectionObject = {
-    SERVER : "ids1210",
-    DATABASE : "sample",
-    HOSTNAME : "localhost",
-    UID : "informix",
-    PWD : "xxxxxx",
-    SERVICE : "9088",
-    PROTOCOL : "onsoctcp"
-  };
+    SERVER: "ids1210",
+    DATABASE: "sample",
+    HOSTNAME: "localhost",
+    UID: "informix",
+    PWD: "xxxxxx",
+    SERVICE: "9088",
+    PROTOCOL: "onsoctcp",
+    DB_LOCALE: "ru_RU.915",
+    CLIENT_LOCALE: "ru_RU.915"
+  }
 }
 
-exports.connectionObject.SERVER	  = process.env.IFX_SERVER   || exports.connectionObject.SERVER;
-exports.connectionObject.DATABASE = process.env.IFX_DBNAME   || exports.connectionObject.DATABASE;
+exports.connectionObject.SERVER = process.env.IFX_SERVER || exports.connectionObject.SERVER;
+exports.connectionObject.DATABASE = process.env.IFX_DBNAME || exports.connectionObject.DATABASE;
 exports.connectionObject.HOSTNAME = process.env.IFX_HOSTNAME || exports.connectionObject.HOSTNAME;
-exports.connectionObject.UID      = process.env.IFX_UID      || exports.connectionObject.UID;
-exports.connectionObject.PWD      = process.env.IFX_PWD      || exports.connectionObject.PWD;
-exports.connectionObject.SERVICE  = process.env.IFX_SERVICE  || exports.connectionObject.SERVICE;
+exports.connectionObject.UID = process.env.IFX_UID || exports.connectionObject.UID;
+exports.connectionObject.PWD = process.env.IFX_PWD || exports.connectionObject.PWD;
+exports.connectionObject.SERVICE = process.env.IFX_SERVICE || exports.connectionObject.SERVICE;
 exports.connectionObject.PROTOCOL = process.env.IFX_PROTOCOL || exports.connectionObject.PROTOCOL;
+exports.connectionObject.DB_LOCALE = process.env.DB_LOCALE || exports.connectionObject.DB_LOCALE;
+exports.connectionObject.CLIENT_LOCALE = process.env.CLIENT_LOCALE || exports.connectionObject.CLIENT_LOCALE;
 
 //checks if schema is defined
 if (process.env.IFX_SCHEMA !== 'undefined') {
-    exports.connectionObject.CURRENTSCHEMA = process.env.IFX_SCHEMA || exports.connectionObject.CURRENTSCHEMA;
+  exports.connectionObject.CURRENTSCHEMA = process.env.IFX_SCHEMA || exports.connectionObject.CURRENTSCHEMA;
 }
 
-for(key in exports.connectionObject) 
-{
-    if(exports.connectionObject[key] != undefined)
-      exports.connectionString = exports.connectionString + key + "=" +
-                                 exports.connectionObject[key] + ";" ;
+for (key in exports.connectionObject) {
+  if (exports.connectionObject[key] != undefined)
+    exports.connectionString = exports.connectionString + key + "=" +
+      exports.connectionObject[key] + ";";
 }
 
 //if (process.argv.length === 3) {
 //  exports.connectionString = process.argv[2];
 //}
 
-exports.testConnectionStrings = [{ title : "Informix", 
-                        connectionString : exports.connectionString }];
+exports.testConnectionStrings = [{
+  title: "Informix",
+  connectionString: exports.connectionString
+}];
 exports.benchConnectionStrings = exports.testConnectionStrings;
 
 if (process.argv.length === 3) {
   //look through the testConnectionStrings to see if there is a title that matches
   //what was requested.
   var lookup = process.argv[2];
-  
+
   exports.testConnectionStrings.forEach(function (connectionString) {
     if (connectionString && connectionString.title && connectionString.title == lookup) {
       exports.connectionString = connectionString.connectionString

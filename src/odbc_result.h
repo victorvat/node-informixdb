@@ -26,8 +26,8 @@ class ODBCResult : public Nan::ObjectWrap {
   public:
    static Nan::Persistent<String> OPTION_FETCH_MODE;
    static Nan::Persistent<Function> constructor;
-   static void Init(v8::Handle<Object> exports);
-   
+   static NAN_MODULE_INIT(Init);
+
    void Free();
    
   protected:
@@ -60,6 +60,9 @@ class ODBCResult : public Nan::ObjectWrap {
     static NAN_METHOD(FetchSync);
     static NAN_METHOD(FetchAllSync);
     static NAN_METHOD(GetColumnNamesSync);
+    static NAN_METHOD(GetColumnMetadataSync);
+    static NAN_METHOD(GetSQLErrorSync);
+    static NAN_METHOD(GetAffectedRowsSync);
     
     //property getter/setters
     static NAN_GETTER(FetchModeGetter);

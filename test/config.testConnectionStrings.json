@@ -5,5 +5,7 @@
   "PWD" : "*****",
   "HOSTNAME" : "localhost",
   "SERVICE" : 9018,
-  "PROTOCOL" : "onsoctcp" 
+  "PROTOCOL" : "onsoctcp",
+  "DB_LOCALE" : "ru_RU.915",
+  "CLIENT_LOCALE": "ru_RU.915"
 }
