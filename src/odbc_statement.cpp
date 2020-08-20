@@ -86,7 +86,7 @@ ODBCStatement::~ODBCStatement()
 void ODBCStatement::Free() 
 {
   DEBUG_PRINTF("ODBCStatement::Free - Entry: paramCount = %i, m_hSTMT =%X\n", 
-  paramCount, m_hSTMT);
+  		paramCount, m_hSTMT);
   //if we previously had parameters, then be sure to free them
   if (paramCount) {
       FREE_PARAMS( params, paramCount ) ;
@@ -212,7 +212,9 @@ void ODBCStatement::UV_AfterExecute(uv_work_t* req, int status)
   if (SQL_SUCCEEDED( data->result )) {
     for(int i = 0; i < stmt->paramCount; i++) { // For stored Procedure CALL
       if(stmt->params[i].paramtype % 2 == 0) {
-          Nan::Set(sp_result, Nan::New(outParamCount), ODBC::GetOutputParameter(stmt->params[i]));
+          Nan::Set(sp_result, 
+          		Nan::New(outParamCount), 
+          		ODBC::GetOutputParameter(stmt->params[i]));
         outParamCount++;
       }
     }
@@ -284,7 +286,9 @@ NAN_METHOD(ODBCStatement::ExecuteSync)
   if (SQL_SUCCEEDED(ret)) {
     for(int i = 0; i < stmt->paramCount; i++) { // For stored Procedure CALL
       if(stmt->params[i].paramtype % 2 == 0) {
-          Nan::Set(sp_result, Nan::New(outParamCount), ODBC::GetOutputParameter(stmt->params[i]));
+          Nan::Set(sp_result, 
+          		Nan::New(outParamCount), 
+          		ODBC::GetOutputParameter(stmt->params[i]));
         outParamCount++;
       }
     }
@@ -316,8 +320,10 @@ NAN_METHOD(ODBCStatement::ExecuteSync)
     if( outParamCount ) // Its a CALL stmt with OUT params.
     {   // Return an array with outparams as second element. [result, outparams]
         Local<Array> resultset = Nan::New<Array>();
-        Nan::Set(resultset, 0, js_result);
-        Nan::Set(resultset, 1, sp_result);
+        Nan::Set(resultset, 
+        		0, js_result);
+        Nan::Set(resultset, 
+        		1, sp_result);
         info.GetReturnValue().Set(resultset);
     }
     else
@@ -398,7 +404,7 @@ void ODBCStatement::UV_AfterExecuteNonQuery(uv_work_t* req, int status)
       info[0] = ODBC::GetSQLError(
         SQL_HANDLE_STMT,
         self->m_hSTMT,
-        (char *) "[node-ibm_db] Warning in ODBCStatement::UV_AfterExecuteNonQuery");
+        (char *) "[node-informix] Warning in ODBCStatement::UV_AfterExecuteNonQuery");
       warning = 1;
   }
   if ((ret == SQL_SUCCESS) || (ret == SQL_SUCCESS_WITH_INFO)) {
@@ -416,7 +422,7 @@ void ODBCStatement::UV_AfterExecuteNonQuery(uv_work_t* req, int status)
       info[0] = ODBC::GetSQLError(
         SQL_HANDLE_STMT,
         self->m_hSTMT,
-        (char *) "[node-ibm_db] Warning in ODBCStatement::UV_AfterExecuteNonQuery for SQLRowCount.");
+        (char *) "[node-informix] Warning in ODBCStatement::UV_AfterExecuteNonQuery for SQLRowCount.");
     }
     else if (!warning) {
     info[0] = Nan::Null();

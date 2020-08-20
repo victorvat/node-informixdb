@@ -362,7 +362,8 @@ static int conv_num(const char **buf, int *dest, int llim, int ulim)
         result *= 10;
         result += *(*buf)++ - '0';
         rulim /= 10;
-    } while ((result * 10 <= ulim) && rulim && **buf >= '0' && **buf <= '9');
+    } 
+    while ((result * 10 <= ulim) && rulim && **buf >= '0' && **buf <= '9');
 
     if (result < llim || result > ulim)
         return (0);

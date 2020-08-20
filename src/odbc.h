@@ -147,11 +147,11 @@ public:
   static NAN_MODULE_INIT(Init);
   static Column *GetColumns(SQLHSTMT hStmt, short *colCount);
   static void FreeColumns(Column *columns, short *colCount);
-  static Local<Value> GetColumnValue(SQLHSTMT hStmt, Column column, uint16_t *buffer, int bufferLength);
+  static Local<Value> GetColumnValue(SQLHSTMT hStmt, Column column, uint16_t* buffer, int bufferLength);
   static Local<Value> GetOutputParameter(Parameter prm);
   static Local<Object> GetRecordTuple(SQLHSTMT hStmt, Column *columns, short *colCount, uint16_t *buffer, int bufferLength);
   static Local<Value> GetRecordArray(SQLHSTMT hStmt, Column *columns, short *colCount, uint16_t *buffer, int bufferLength);
-  static Local<Value> CallbackSQLError(SQLSMALLINT handleType, SQLHANDLE handle, Nan::Callback *cb);
+  static Local<Value> CallbackSQLError(SQLSMALLINT handleType, SQLHANDLE handle, Nan::Callback* cb);
   static Local<Value> CallbackSQLError(SQLSMALLINT handleType, SQLHANDLE handle, char *message, Nan::Callback *cb);
   static Local<Value> GetSQLError(SQLSMALLINT handleType, SQLHANDLE handle);
   static Local<Value> GetSQLError(SQLSMALLINT handleType, SQLHANDLE handle, char *message);
@@ -358,7 +358,9 @@ struct query_request
 
 // From node v10 NODE_DEFINE_CONSTANT
 #define NODE_ODBC_DEFINE_CONSTANT(constructor_template, constant) \
-  (constructor_template)->Set(Nan::New<String>(#constant).ToLocalChecked(), Nan::New<Number>(constant), static_cast<v8::PropertyAttribute>(v8::ReadOnly | v8::DontDelete))
+  (constructor_template)->Set(Nan::New<String>(#constant).ToLocalChecked(), \
+                Nan::New<Number>(constant), 								\
+                static_cast<v8::PropertyAttribute>(v8::ReadOnly | v8::DontDelete))
 
 #endif
 

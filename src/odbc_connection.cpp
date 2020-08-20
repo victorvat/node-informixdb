@@ -172,7 +172,8 @@ NAN_SETTER(ODBCConnection::ConnectTimeoutSetter)
   ODBCConnection *obj = Nan::ObjectWrap::Unwrap<ODBCConnection>(info.Holder());
   
   if (value->IsNumber()) {
-    obj->connectTimeout = Nan::To<int32_t>(value).FromJust();
+    obj->connectTimeout = 
+    		Nan::To<int32_t>(value).FromJust();
   }
 }
 
@@ -191,7 +192,8 @@ NAN_SETTER(ODBCConnection::SystemNamingSetter)
 
   ODBCConnection *obj = Nan::ObjectWrap::Unwrap<ODBCConnection>(info.Holder());
 
-  obj->systemNaming = Nan::To<bool>(value).FromJust();
+  obj->systemNaming = 
+  		Nan::To<bool>(value).FromJust();
 }
 
 /*
@@ -1170,7 +1172,9 @@ void ODBCConnection::UV_AfterQuery(uv_work_t* req, int status)
   if (SQL_SUCCEEDED(data->result)) {
       for(int i = 0; i < data->paramCount; i++) {
           if(data->params[i].paramtype % 2 == 0) {
-              Nan::Set(sp_result, Nan::New(outParamCount), ODBC::GetOutputParameter(data->params[i]));
+              Nan::Set(sp_result, 
+              		Nan::New(outParamCount), 
+              		ODBC::GetOutputParameter(data->params[i]));
               outParamCount++;
           }
       }
@@ -1386,7 +1390,9 @@ NAN_METHOD(ODBCConnection::QuerySync)
         if (SQL_SUCCEEDED(ret)) {
           for(int i = 0; i < paramCount; i++) { // For stored Procedure CALL
             if(params[i].paramtype % 2 == 0) {
-              Nan::Set(sp_result, Nan::New(outParamCount), ODBC::GetOutputParameter(params[i]));
+              Nan::Set(sp_result, 
+              		Nan::New(outParamCount), 
+              		ODBC::GetOutputParameter(params[i]));
               outParamCount++;
             }
           }
@@ -1428,8 +1434,10 @@ NAN_METHOD(ODBCConnection::QuerySync)
     if( outParamCount ) // Its a CALL stmt with OUT params.
     { // Return an array with outparams as second element.
       Local<Array> resultset = Nan::New<Array>();
-      Nan::Set(resultset, 0, Nan::Null());
-      Nan::Set(resultset, 1, sp_result);
+      Nan::Set(resultset, 
+      			0, Nan::Null());
+      Nan::Set(resultset, 
+      			1, sp_result);
       info.GetReturnValue().Set(resultset);
     } else {
       info.GetReturnValue().Set(Nan::Null());
@@ -1449,8 +1457,10 @@ NAN_METHOD(ODBCConnection::QuerySync)
     if( outParamCount ) // Its a CALL stmt with OUT params.
     { // Return an array with outparams as second element. [result, outparams]
       Local<Array> resultset = Nan::New<Array>();
-      Nan::Set(resultset, 0, js_result);
-      Nan::Set(resultset, 1, sp_result);
+      Nan::Set(resultset, 
+      			0, js_result);
+      Nan::Set(resultset, 
+      			1, sp_result);
       info.GetReturnValue().Set(resultset);
     } else {
       info.GetReturnValue().Set(js_result);
@@ -1967,7 +1977,8 @@ NAN_METHOD(ODBCConnection::SetIsolationLevel)
       isolationLevel = SQL_TXN_READ_COMMITTED;
   }
   else if (info[0]->IsInt32()) {
-    isolationLevel = Nan::To<v8::Int32>(info[0]).ToLocalChecked()->Value();
+    isolationLevel = 
+    			Nan::To<v8::Int32>(info[0]).ToLocalChecked()->Value();
   }
   else {
       return Nan::ThrowTypeError("Argument #0 must be an integer.");
