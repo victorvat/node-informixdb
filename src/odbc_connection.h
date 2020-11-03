@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2017, 2020 OpenInformix (HCL Technologies).
+  Copyright (c) 2017, 2020 OpenInformix.
   Copyright (c) 2014, IBM Corporation.
   Copyright (c) 2013, Dan VerWeire <dverweire@gmail.com>
   Copyright (c) 2010, Lee Smith <notwink@gmail.com>
@@ -31,7 +31,7 @@ class ODBCConnection : public Nan::ObjectWrap {
    static Nan::Persistent<String> OPTION_NORESULTS;
    static Nan::Persistent<Function> constructor;
    
-   static void Init(v8::Handle<Object> exports);
+   static void Init(v8::Local<Object> exports);
    
    void Free();
    

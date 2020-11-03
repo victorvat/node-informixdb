@@ -3,21 +3,54 @@ Informix native node.js driver is a high performance driver with asynchronous/sy
 
 **Supported Platforms** - Windows64, MacOS64, Linuxx64, Linuxia32, AIX.
 
-## API Documentation
+## Supported Node.js Versions
 
-> For complete list of informixdb APIs and example, please check [APIDocumentation.md](https://github.com/OpenInformix/node-informixdb/blob/master/APIDocumentation.md)
+**Recommended version of node.js is >= V10.X**
+
+| Node.js Version   | Windows 64        | Linux x64         | MacOS             | AIX                |
+| :---:             | :---:             | :---:             | :---:             | :---:              |
+| < V8.X            | NO (DISCONTINUED) | NO (DISCONTINUED) | NO (DISCONTINUED) | NO (DISCONTINUED)  |
+|   V8.X            | NO (DISCONTINUED) | NO (DISCONTINUED) | NO (DISCONTINUED) | NO (DISCONTINUED)  |
+|   V9.X            | NO (DISCONTINUED) | NO (DISCONTINUED) | NO (DISCONTINUED) | NO (DISCONTINUED)  |
+|   V10.X           | YES               | YES               | Yes               | YES                |
+|   V11.X           | YES               | YES               | Yes               | YES                |
+|   V12.X           | YES               | YES               | Yes               | YES                |
+|   V13.X           | YES               | YES               | Yes               | YES                |
+|   V14.X           | YES               | YES               | Yes               | YES                |
+| > V14.X           | FUTURE            | FUTURE            | FUTURE            | FUTURE             |
+
+**The latest node.js version using which informixdb is tested: 14.9.0**
 
 ## Prerequisite
-
-- For higher versions of node (When building with Node 4 onwards) the compiler must support C++11. Note the default compiler on RHEL 6 does not have the required support. Install a newer compiler or upgrade the older one.
 
 - Python 2.7 is required by node-gyp.
 
 - Informix CSDK (Client Software Development Kit) for connectivity.
 
-- Recommended version of node.js is >= V4.X.
+- Set **CSDK_HOME** or **INFORMIXDIR** environment variables to a pre-installed Informix CSDK installation directory.
 
-- If Windows Platform : for compilation of informixdb Visual Studio is required, if not available then module will install with "pre-compiled" binary version. 
+- If Windows Platform: for compilation of informixdb Visual Studio is required, if not available then module will install with "pre-compiled" binary version.
+
+- If Linux Platform: for compilation of informixdb C++11 compiler is required, if not available then module will install with "pre-compiled" binary version.
+  (Note the default compiler on RHEL 6 does not have the required support. Install a newer compiler or upgrade the older one.)
+
+### Important Environment Variables and Download Essentials 
+
+`CSDK_HOME:`
+
+- USE:
+	- On distributed platforms, set this environment variable if you want to compile/build the informixdb module.
+
+- HOW:
+	- Set **CSDK_HOME** environment variable to a pre-installed **Informix CSDK installation directory**.
+
+`INFORMIXDIR:`
+
+- USE:
+	- On distributed platforms, set this environment variable if you want to compile/build the informixdb module.
+
+- HOW:
+	- Set **INFORMIXDIR** environment variable to a pre-installed **Informix CSDK installation directory**.
 
 ## Install
 
@@ -27,28 +60,17 @@ You may install the package using npm install command:
 npm install informixdb
 ```
 
-> For more installation details please refer:  [INSTALLATION GUIDE](https://github.com/OpenInformix/node-informixdb/blob/master/INSTALL.md)
+or, you can install the latest driver from Github (Not recommanded for production use):
 
+```
+npm install git+https://github.com/OpenInformix/node-informixdb.git
+```
 
-### Important Environment Variables and Download Essentials 
+> [For more installation details please refer:  INSTALLATION GUIDE](https://github.com/OpenInformix/node-informixdb/blob/master/INSTALL.md)
 
-`CSDK_HOME :`
+## API Documentation
 
-- USE:
-	- On distributed platforms, set this environment variable if you want to compile/build the informixdb module.
-
-- HOW:
-	- Set **CSDK_HOME** environment variable to a pre-installed **Informix CSDK or Informix server installation directory**.
-
-`INFORMIXDIR :`
-
-- USE:
-	- On distributed platforms, set this environment variable if you want to compile/build the informixdb module.
-
-- HOW:
-	- Set **INFORMIXDIR** environment variable to a pre-installed **Informix server installation directory**.
-
-
+> [For complete list of informixdb APIs and example, please check API DOCUMENTATION](https://github.com/OpenInformix/node-informixdb/blob/master/APIDocumentation.md)
 
 ## Quick Example
 
@@ -128,11 +150,12 @@ If no solution found, you can open a new issue on GitHub.
 ## Contributors
 
 * Rohit Pandey (rht.uimworld@gmail.com)
+* Anjali Pancholi
 * Sathyanesh Krishnan (msatyan@gmail.com)
 * Javier Sagrera
 * Dan VerWeire (dverweire@gmail.com)
 * Lee Smith (notwink@gmail.com)
-* HCL/IBM
+* IBM
 
 ## Contributing to the informixdb
 
@@ -145,7 +168,7 @@ DC Signed-off-by: Random J Developer <random@developer.org>
 
 ## License
 
-  Copyright (c) 2017, 2020 OpenInformix (HCL Technologies).
+  Copyright (c) 2017, 2020 OpenInformix.
   Copyright (c) 2014, IBM Corporation.
   Copyright (c) 2013, Dan VerWeire <dverweire@gmail.com>
   Copyright (c) 2010, Lee Smith <notwink@gmail.com>
