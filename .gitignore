@@ -6,3 +6,4 @@ defect
 .DS_Store
 .vscode
 .git
+installer/onedb-odbc-driver
