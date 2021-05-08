@@ -1142,10 +1142,8 @@ Local<Value> ODBC::GetSQLError (SQLSMALLINT handleType, SQLHANDLE handle, char* 
   SQLRETURN ret;
   char errorSQLState[14];
   char errorMessage[SQL_MAX_MESSAGE_LENGTH];
-  char errorNative[14];
 
   SQLINTEGER ISAMerror = 0;
-  char errorISAM[14];
 
   ret = SQLGetDiagField(
       handleType,
@@ -1190,14 +1188,10 @@ Local<Value> ODBC::GetSQLError (SQLSMALLINT handleType, SQLHANDLE handle, char* 
       Nan::Set(objError, Nan::New("message").ToLocalChecked(), Nan::New(errorMessage).ToLocalChecked());
       Nan::Set(objError, Nan::New("state").ToLocalChecked(), Nan::New(errorSQLState).ToLocalChecked());
 #endif
-      // sprintf(errorNative, "%i", native);
-      // Nan::Set(objError, Nan::New("native").ToLocalChecked(), Nan::New(errorNative).ToLocalChecked());
       Nan::Set(objError, Nan::New("native").ToLocalChecked(), Nan::New(native));
 
       ret = SQLGetDiagField(handleType, handle, 1, SQL_DIAG_ISAM_ERROR, (SQLPOINTER)&ISAMerror, SQL_IS_INTEGER, NULL);
       if (SQL_SUCCEEDED(ret)) {
-        // sprintf(errorISAM, "%i", ISAMerror);
-        // Nan::Set(objError, Nan::New("ISAM").ToLocalChecked(), Nan::New(errorISAM).ToLocalChecked());
         Nan::Set(objError, Nan::New("ISAM").ToLocalChecked(), Nan::New(ISAMerror));
       }
     } else {
