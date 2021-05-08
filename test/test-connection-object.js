@@ -1,10 +1,10 @@
-var common = require("./common")
-  , odbc = require("../")
-  , db = new odbc.Database()
-  , assert = require("assert")
+const common = require('./common');
+const odbc = require('../');
+const db = new odbc.Database();
+const assert = require('assert')
   ;
 
-db.open(common.connectionObject, function(err){
+db.open(common.connectionObject, function (err) {
   assert.equal(err, null);
 
   db.close(function () {

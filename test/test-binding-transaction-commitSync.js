@@ -1,51 +1,49 @@
-var common = require("./common")
-  , odbc = require("../")
-  , db = new odbc.ODBC()
-  , assert = require("assert")
-  , exitCode = 0
+const common = require('./common');
+const odbc = require('../');
+const db = new odbc.ODBC();
+const assert = require('assert');
+let exitCode = 0
   ;
 
 db.createConnection(function (err, conn) {
   conn.openSync(common.connectionString);
-  
+
   common.createTables(conn, function (err, data) {
     try {
       conn.beginTransactionSync();
-      
-      var result = conn.querySync("insert into " + common.tableName + " (COLINT, COLDATETIME, COLTEXT) VALUES (42, null, null)" );
 
-      conn.endTransactionSync(true); //rollback
-      
-      result = conn.querySync("select * from " + common.tableName);
-      
+      var result = conn.querySync('insert into ' + common.tableName + ' (COLINT, COLDATETIME, COLTEXT) VALUES (42, null, null)');
+
+      conn.endTransactionSync(true); // rollback
+
+      result = conn.querySync('select * from ' + common.tableName);
+
       assert.deepEqual(result.fetchAllSync(), []);
-    }
-    catch (e) {
-      console.log("Failed when rolling back");
+    } catch (e) {
+      console.log('Failed when rolling back');
       console.log(e);
-      exitCode = 1
-    }  
-      
-    try {
-      //Start a new transaction
-      conn.beginTransactionSync();
-      
-      result = conn.querySync("insert into " + common.tableName + " (COLINT, COLDATETIME, COLTEXT) VALUES (42, null, null)" );
+      exitCode = 1;
+    }
 
-      conn.endTransactionSync(false); //commit
-      
-      result = conn.querySync("select * from " + common.tableName);
-      
-      assert.deepEqual(result.fetchAllSync(), [ { colint: 42, coldatetime: null, coltext: null } ]);
+    try {
+      // Start a new transaction
+      conn.beginTransactionSync();
+
+      result = conn.querySync('insert into ' + common.tableName + ' (COLINT, COLDATETIME, COLTEXT) VALUES (42, null, null)');
+
+      conn.endTransactionSync(false); // commit
+
+      result = conn.querySync('select * from ' + common.tableName);
+
+      assert.deepEqual(result.fetchAllSync(), [{ colint: 42, coldatetime: null, coltext: null }]);
 	  result.closeSync();
-    }
-    catch (e) {
-      console.log("Failed when committing");
+    } catch (e) {
+      console.log('Failed when committing');
       console.log(e);
-      
+
       exitCode = 2;
     }
-    
+
     common.dropTables(conn, function (err) {
       conn.closeSync();
       process.exit(exitCode);

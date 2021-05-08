@@ -1,21 +1,20 @@
-var common = require("./common")
-  , odbc = require("../")
-  , db = new odbc.Database()
-  , assert = require("assert")
+const common = require('./common');
+const odbc = require('../');
+const db = new odbc.Database();
+const assert = require('assert')
   ;
 
 db.openSync(common.connectionString);
 assert.equal(db.connected, true);
-var err = null;
+let err = null;
 
 try {
-  var data = db.querySync("select invalid query");
-}
-catch (e) {
+  const data = db.querySync('select invalid query');
+} catch (e) {
   console.log(e);
 
   err = e;
 }
 
 db.closeSync();
-assert.equal(err.error, "[node-informixdb] Error in ODBCConnection::QuerySync");
+assert.equal(err.error, '[node-informixdb] Error in ODBCConnection::QuerySync');

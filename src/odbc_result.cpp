@@ -207,7 +207,7 @@ NAN_METHOD(ODBCResult::Fetch) {
 }
 
 void ODBCResult::UV_Fetch(uv_work_t* work_req) {
-  DEBUG_PRINTF("ODBCResult::UV_Fetch\n");
+  DEBUG_PRINTF("ODBCResult::UV_Fetch => Entry\n");
   
   fetch_work_data* data = (fetch_work_data *)(work_req->data);
   
@@ -215,7 +215,7 @@ void ODBCResult::UV_Fetch(uv_work_t* work_req) {
 }
 
 void ODBCResult::UV_AfterFetch(uv_work_t* work_req, int status) {
-  DEBUG_PRINTF("ODBCResult::UV_AfterFetch\n");
+  DEBUG_PRINTF("ODBCResult::UV_AfterFetch started\n");
   Nan::HandleScope scope;
   
   fetch_work_data* data = (fetch_work_data *)(work_req->data);
@@ -226,31 +226,34 @@ void ODBCResult::UV_AfterFetch(uv_work_t* work_req, int status) {
   Local<Value> objError;
   bool moreWork = true;
   bool error = false;
-  
-  if (data->objResult->colCount == 0) {
-    data->objResult->columns = ODBC::GetColumns(
-      data->objResult->m_hSTMT, 
-      &data->objResult->colCount);
-  }
-  
-  //check to see if the result has no columns
-  if (data->objResult->colCount == 0) {
-    //this means
-    moreWork = false;
-  }
-  //check to see if there was an error
-  else if (ret == SQL_ERROR)  {
+
+  if (ret == SQL_ERROR)
+  {
     moreWork = false;
     error = true;
-    
+
     objError = ODBC::GetSQLError(
-      SQL_HANDLE_STMT, 
-      data->objResult->m_hSTMT,
-      (char *) "Error in ODBCResult::UV_AfterFetch");
+        SQL_HANDLE_STMT,
+        data->objResult->m_hSTMT,
+        (char *)"Error in ODBCResult::UV_AfterFetch");
   }
   //check to see if we are at the end of the recordset
-  else if (ret == SQL_NO_DATA) {
+  else if (ret == SQL_NO_DATA)
+  {
     moreWork = false;
+  }
+
+  if (data->objResult->colCount == 0)
+  {
+    data->objResult->columns = ODBC::GetColumns(
+        data->objResult->m_hSTMT,
+        &data->objResult->colCount);
+    //check to see if the result has no columns
+    if (data->objResult->colCount == 0)
+    {
+      //this means
+      moreWork = false;
+    }
   }
 
   if (moreWork) {
@@ -259,19 +262,19 @@ void ODBCResult::UV_AfterFetch(uv_work_t* work_req, int status) {
     info[0] = Nan::Null();
     if (data->fetchMode == FETCH_ARRAY) {
       info[1] = ODBC::GetRecordArray(
-        data->objResult->m_hSTMT,
-        data->objResult->columns,
-        &data->objResult->colCount,
-        data->objResult->buffer,
-        data->objResult->bufferLength);
+          data->objResult->m_hSTMT,
+          data->objResult->columns,
+          &data->objResult->colCount,
+          data->objResult->buffer,
+          data->objResult->bufferLength);
     }
     else {
       info[1] = ODBC::GetRecordTuple(
-        data->objResult->m_hSTMT,
-        data->objResult->columns,
-        &data->objResult->colCount,
-        data->objResult->buffer,
-        data->objResult->bufferLength);
+          data->objResult->m_hSTMT,
+          data->objResult->columns,
+          &data->objResult->colCount,
+          data->objResult->buffer,
+          data->objResult->bufferLength);
     }
 
     Nan::TryCatch try_catch;
@@ -285,7 +288,7 @@ void ODBCResult::UV_AfterFetch(uv_work_t* work_req, int status) {
   }
   else {
     ODBC::FreeColumns(data->objResult->columns, &data->objResult->colCount);
-    
+
     Local<Value> info[2];
     
     //if there was an error, pass that as arg[0] otherwise Null
@@ -312,7 +315,7 @@ void ODBCResult::UV_AfterFetch(uv_work_t* work_req, int status) {
   
   free(data);
   free(work_req);
-  
+
   return;
 }
 

@@ -1,41 +1,30 @@
-var dbobj = require('informixdb');
+const dbobj = require('informixdb');
 
-function DirExec( conn, ErrIgn, sql )
-{
-	try
-	{
-		var result = conn.querySync( sql );
-		console.log( sql  );
-	}
-    catch (e) 
-	{
-		console.log( "--- " + sql  );
-		if( ErrIgn != 1 )
-		{
-			console.log(e);
-			console.log();
-		}
+function DirExec (conn, ErrIgn, sql) {
+  try {
+    const result = conn.querySync(sql);
+    console.log(sql);
+  } catch (e) {
+    console.log('--- ' + sql);
+    if (ErrIgn != 1) {
+      console.log(e);
+      console.log();
     }
+  }
 }
 
+function DoSomePrepareExec (conn) {
+  let stmt;
 
-function DoSomePrepareExec(conn)
-{
-    var stmt;
-
-    console.log("--- CreateStatementSync");
-    try
-    {
-        stmt = conn.createStatementSync();
-    }
-    catch (e)
-    {
-        console.log(e);
-        return;
-    }
-    console.log("--- CreateStatementSync Done");
-    stmt.closeSync();
-
+  console.log('--- CreateStatementSync');
+  try {
+    stmt = conn.createStatementSync();
+  } catch (e) {
+    console.log(e);
+    return;
+  }
+  console.log('--- CreateStatementSync Done');
+  stmt.closeSync();
 
 /*
     conn.createStatement(function (err, stmt)
@@ -122,102 +111,86 @@ function DoSomePrepareExec(conn)
     */
 }
 
-function DoSomeWork(err, conn)
-{
-    if (err) 
-	{
-        return console.log(err);
-    }
-	
-	DirExec( conn, 1, "drop table t1" );
-	DirExec( conn, 0, "create table t1 ( c1 int, c2 char(20) ) " );
-	DirExec( conn, 0, "insert into t1 values( 1, 'val-1' )" );
-	DirExec( conn, 0, "insert into t1 values( 2, 'val-2' )" );
-	DirExec( conn, 0, "insert into t1 values( 3, 'val-3' )" );
-	DirExec( conn, 0, "insert into t1 values( 4, 'val-4' )" );
-	DirExec(conn, 0, "insert into t1 values( 5, 'val-5' )");
+function DoSomeWork (err, conn) {
+  if (err) {
+    return console.log(err);
+  }
 
-	console.log(" --- prepareSync() ------ ");
-	DoSomePrepareExec(conn)
+  DirExec(conn, 1, 'drop table t1');
+  DirExec(conn, 0, 'create table t1 ( c1 int, c2 char(20) ) ');
+  DirExec(conn, 0, "insert into t1 values( 1, 'val-1' )");
+  DirExec(conn, 0, "insert into t1 values( 2, 'val-2' )");
+  DirExec(conn, 0, "insert into t1 values( 3, 'val-3' )");
+  DirExec(conn, 0, "insert into t1 values( 4, 'val-4' )");
+  DirExec(conn, 0, "insert into t1 values( 5, 'val-5' )");
 
-/*
+  console.log(' --- prepareSync() ------ ');
+  DoSomePrepareExec(conn);
+
+  /*
 	//var stmt = conn.prepareSync("insert into t1 (c1, c2) VALUES (?, ?)");
     //Bind and Execute the statment asynchronously
-	stmt.execute([ 6, 'BindVal-6'], 
-        function (err, result) 
+	stmt.execute([ 6, 'BindVal-6'],
+        function (err, result)
 	{
 	    result.closeSync();
 
 	});
 */
 
-    console.log();
-    console.log(" --- SELECT * FROM t1 ------ " );
-    // blocks until the query is completed and all data has been acquired
-    var rows = conn.querySync( "SELECT * FROM t1" );
-    console.log();
-    console.log(rows);
+  console.log();
+  console.log(' --- SELECT * FROM t1 ------ ');
+  // blocks until the query is completed and all data has been acquired
+  const rows = conn.querySync('SELECT * FROM t1');
+  console.log();
+  console.log(rows);
+}
+
+const MyAsynchronousTask = function (err, conn) {
+  DoSomeWork(err, conn);
+  conn.close();
 };
 
-
-var MyAsynchronousTask = function (err, conn)
-{
-	DoSomeWork(err, conn);
-	conn.close();
+function informixdb_Open (ConStr) {
+  console.log();
+  console.log(' --- MyAsynchronousTask Starting.....');
+  dbobj.open(ConStr, MyAsynchronousTask);
+  // dbobj.close(function () {});
+  console.log(' --- Log Message sequence... ?');
+  console.log(' --- You are on Asynchronous call! :)');
 }
 
-function informixdb_Open(ConStr)
-{
-	console.log();
-	console.log(" --- MyAsynchronousTask Starting....." );
-	dbobj.open( ConStr, MyAsynchronousTask );
-	//dbobj.close(function () {});
-	console.log(" --- Log Message sequence... ?" );
-	console.log(" --- You are on Asynchronous call! :)" );
-}
-
-function informixdb_OpenSync(ConStr)
-{
-	console.log();
-	console.log(" --- Executing informixdb.openSync() ...." );
-	var conn;
-	try 
-	{
+function informixdb_OpenSync (ConStr) {
+  console.log();
+  console.log(' --- Executing informixdb.openSync() ....');
+  let conn;
+  try {
 	  conn = dbobj.openSync(ConStr);
-	}
-	catch(e) 
-	{
+  } catch (e) {
 	  console.log(e);
 	  return;
-	}
-	
-	DoSomeWork(0, conn);
-	
-	try 
-	{
-	    //dbobj.closeSync();
+  }
+
+  DoSomeWork(0, conn);
+
+  try {
+	    // dbobj.closeSync();
 	    conn.closeSync();
-	}
-	catch(e) 
-	{
+  } catch (e) {
 	  console.log(e);
-	}
-	console.log(" --- End informixdb.openSync()" );
+  }
+  console.log(' --- End informixdb.openSync()');
 }
 
-function main_func() 
-{
-    ////  Make sure the port is IDS SQLI port.
-	var ConnectionString = "SERVER=ids0;DATABASE=db1;HOST=127.0.0.1;SERVICE=9088;PROTOCOL=onsoctcp;UID=informix;PWD=xxxx;";
+function main_func () {
+  /// /  Make sure the port is IDS SQLI port.
+  const ConnectionString = 'SERVER=ids0;DATABASE=db1;HOST=127.0.0.1;SERVICE=9088;PROTOCOL=onsoctcp;UID=informix;PWD=xxxx;';
 
-	//Synchronous Execution 
-	informixdb_OpenSync(ConnectionString);
-	
-	//Asynchronous Execution
-	//informixdb_Open(ConnectionString);
+  // Synchronous Execution
+  informixdb_OpenSync(ConnectionString);
+
+  // Asynchronous Execution
+  // informixdb_Open(ConnectionString);
 }
 
 main_func();
-
-
-

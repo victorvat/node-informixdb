@@ -1,36 +1,36 @@
 // test file to test idle connection is getting dropped or not.
 
-var informixdb = require("../")
-    , pool = new informixdb.Pool()
-    , assert = require("assert")
-    , common = require("./common.js")
-    , cn = common.connectionString
-    , starttime
-    , endtime
+const informixdb = require('../');
+const pool = new informixdb.Pool();
+const assert = require('assert');
+const common = require('./common.js');
+const cn = common.connectionString;
+let starttime;
+let endtime
     ;
 
-console.log("Trying to open a new connection at => " + getDateTime());
-pool.open(cn, function (err,conn) {
+console.log('Trying to open a new connection at => ' + getDateTime());
+pool.open(cn, function (err, conn) {
   if (err) console.log(err);
   assert.equal(err, null);
-  console.log("Got new connection at => " + getDateTime());
+  console.log('Got new connection at => ' + getDateTime());
   conn.query('select 1 from table(set{1})', function (err, data) {
     if (err) console.log(err);
     else console.log(data);
 
     conn.close(function () {
-      console.log("Connection surrenderred to pool at " + getDateTime());
+      console.log('Connection surrenderred to pool at ' + getDateTime());
       console.log('Now wait for 70 seconds and then access connection.');
     });
 
-    //wait for 2 min then access connection.
+    // wait for 2 min then access connection.
     setTimeout(function () {
       starttime = getDateTime();
-      console.log("70 seconds elapesed, try to get connection from pool at ==> "+ starttime);
-      pool.open(cn, function (err,conn) {
+      console.log('70 seconds elapesed, try to get connection from pool at ==> ' + starttime);
+      pool.open(cn, function (err, conn) {
         if (err) return console.log(err);
         endtime = getDateTime();
-        console.log("Got connection from pool at ==> " + endtime);
+        console.log('Got connection from pool at ==> ' + endtime);
         conn.query('select 1 from table(set{1})', function (err, data) {
           if (err) console.log(err);
           else console.log(data);
@@ -41,32 +41,29 @@ pool.open(cn, function (err,conn) {
           });
         });
       });
-    }, 70 * 1000);  //setTimeout 2 minute.
+    }, 70 * 1000); // setTimeout 2 minute.
   });
 });
 
+function getDateTime () {
+  const date = new Date();
 
-function getDateTime() {
+  let hour = date.getHours();
+  hour = (hour < 10 ? '0' : '') + hour;
 
-    var date = new Date();
+  let min = date.getMinutes();
+  min = (min < 10 ? '0' : '') + min;
 
-    var hour = date.getHours();
-    hour = (hour < 10 ? "0" : "") + hour;
+  let sec = date.getSeconds();
+  sec = (sec < 10 ? '0' : '') + sec;
 
-    var min  = date.getMinutes();
-    min = (min < 10 ? "0" : "") + min;
+  const year = date.getFullYear();
 
-    var sec  = date.getSeconds();
-    sec = (sec < 10 ? "0" : "") + sec;
+  let month = date.getMonth() + 1;
+  month = (month < 10 ? '0' : '') + month;
 
-    var year = date.getFullYear();
+  let day = date.getDate();
+  day = (day < 10 ? '0' : '') + day;
 
-    var month = date.getMonth() + 1;
-    month = (month < 10 ? "0" : "") + month;
-
-    var day  = date.getDate();
-    day = (day < 10 ? "0" : "") + day;
-
-    return year + "." + month + "." + day + " " + hour + ":" + min + ":" + sec;
+  return year + '.' + month + '.' + day + ' ' + hour + ':' + min + ':' + sec;
 }
-

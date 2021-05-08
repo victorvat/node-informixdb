@@ -7,3 +7,5 @@ defect
 .vscode
 .git
 installer/onedb-odbc-driver
+*.lock
+*.tgz

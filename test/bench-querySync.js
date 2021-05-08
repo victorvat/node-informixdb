@@ -1,8 +1,8 @@
-var common = require("./common")
-  , odbc = require("../")
-  , db = new odbc.Database();
+const common = require('./common');
+const odbc = require('../');
+const db = new odbc.Database();
 
-db.open(common.connectionString, function(err){ 
+db.open(common.connectionString, function (err) {
   if (err) {
     console.error(err);
     console.log(err);
@@ -12,18 +12,18 @@ db.open(common.connectionString, function(err){
   issueQuery();
 });
 
-function issueQuery() {
-  var count = 0
-    //, iterations = 10000
-    , iterations = 100
-    , time = new Date().getTime();
-  
-  for (var x = 0; x < iterations; x++) {
-    var data = db.querySync("select 1 + 1 as test from table(set{1})");
+function issueQuery () {
+  let count = 0;
+  //, iterations = 10000
+  const iterations = 100;
+  const time = new Date().getTime();
+
+  for (let x = 0; x < iterations; x++) {
+    const data = db.querySync('select 1 + 1 as test from table(set{1})');
     count += 1;
   }
-  
-  var elapsed = (new Date().getTime() - time)/1000;
-  process.stdout.write("(" + count + " queries issued in " + elapsed + " seconds, " + (count/elapsed).toFixed(2) + " query/sec)");
+
+  const elapsed = (new Date().getTime() - time) / 1000;
+  process.stdout.write('(' + count + ' queries issued in ' + elapsed + ' seconds, ' + (count / elapsed).toFixed(2) + ' query/sec)');
   db.close(function () { });
 }

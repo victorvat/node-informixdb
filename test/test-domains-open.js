@@ -1,19 +1,19 @@
-var domain = require("domain");
+const domain = require('domain');
 
-var d = domain.create();
+const d = domain.create();
 
-d.on("error", function (error) {
-  console.log("Error caught!", error);
+d.on('error', function (error) {
+  console.log('Error caught!', error);
 });
 
-d.run(function() {
-   var db = require("../")();
+d.run(function () {
+  const db = require('../')();
 
-   console.trace();
+  console.trace();
 
-   db.open("wrongConnectionString", function (error) {
-      console.trace();
+  db.open('wrongConnectionString', function (error) {
+    console.trace();
 
-      //throw new Error();
-    });
+    // throw new Error();
+  });
 });

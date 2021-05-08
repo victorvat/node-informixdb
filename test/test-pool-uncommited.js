@@ -1,33 +1,32 @@
-var common = require("./common")
-	, informixdb = require("../")
-	, pool = new informixdb.Pool()
-	, cn = common.connectionString
+const common = require('./common');
+	 const informixdb = require('../');
+	 const pool = new informixdb.Pool();
+	 const cn = common.connectionString;
 
-
-var request =  function (err, conn) {
+const request = function (err, conn) {
   if (err) {
     console.log(err);
     process.exit(-1);
   }
   try {
-      conn.querySync("drop table mytab4");
-  } catch(e) {};
+    conn.querySync('drop table mytab4');
+  } catch (e) {}
   conn.beginTransaction(function (err) {
     if (err) {
-      //could not begin a transaction for some reason. 
+      // could not begin a transaction for some reason.
       console.log(err);
       return conn.closeSync();
     }
-    conn.querySync("create table mytab4 (c1 int, c2 varchar(20))");
+    conn.querySync('create table mytab4 (c1 int, c2 varchar(20))');
     conn.querySync("insert into mytab4 values( 3, 'bimal')");
-    console.log(conn.querySync("select * from mytab4"));
-    conn.close(function(){});
+    console.log(conn.querySync('select * from mytab4'));
+    conn.close(function () {});
   });
-}
+};
 
 pool.open(cn, request);
 pool.open(cn, request);
-setTimeout(function() {
-    pool.open(cn, request);
-    pool.open(cn, request);
+setTimeout(function () {
+  pool.open(cn, request);
+  pool.open(cn, request);
 }, 8000);

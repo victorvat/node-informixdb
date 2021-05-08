@@ -17,6 +17,7 @@
       [
         #'UNICODE',
         'ODBC64'
+        # ,  "DEBUG"
       ],
 
       "variables" : {

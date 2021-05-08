@@ -1,20 +1,18 @@
-var common = require("./common")
-	, odbc = require("../")
-	, openCallback = 0
-	, closeCallback = 0
-	, openCount = 10
-	, connections = []
-	, errorCount = 0;
-	;
+const common = require('./common');
+	 const odbc = require('../');
+	 const openCallback = 0;
+	 const closeCallback = 0;
+	 const openCount = 10;
+	 const connections = [];
+	 let errorCount = 0;
 
-for (var x = 0; x < openCount; x++ ) {
-  var db = new odbc.Database();
+for (let x = 0; x < openCount; x++) {
+  const db = new odbc.Database();
   connections.push(db);
 
   try {
     db.openSync(common.connectionString);
-  }
-  catch (e) {
+  } catch (e) {
     console.log(common.connectionString);
     console.log(e);
     errorCount += 1;
